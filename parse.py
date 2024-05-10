@@ -96,6 +96,11 @@ def excel_start():
         wb.save(EXCEL_FILENAME)
         wb.close()
 
+        # заповнюємо створений файл согоднішніми курсами валют
+        today_rates = database_get_data_for_excel()
+        update_rates_in_excel(EXCEL_FILENAME, today_rates) 
+
+
 
 # функція перезаписує xlsx файл, отримуючи актуальні курси, отримані із SQLite у вигляді списку кортежів (датачас, курс)
 def update_rates_in_excel(filename, today_rates):
@@ -128,6 +133,8 @@ excel_start()
 while True:
     time.sleep(1)
     current_time = time.localtime()    # кожну секунду перевіряємо, чи є кількість годин круглою (НН:00:00). Цей час зафіксували у змінній current_time і використовуємо його надалі
+   
+    # if current_time.tm_sec % 30 == 0: # для тестування, виконує оновлення кожні 30 секунд
     if current_time.tm_min == 0 and current_time.tm_sec == 0: 
         
         current_time_sql, rate = get_data_for_sql(current_time) # отримуємо значення часу та курсу
